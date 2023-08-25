@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
-      xmlns:layout=http://www.ultraq.net.nz/thymeleaf/layout
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{layouts/layout1}">
 
-<!-- 사용자 css 추가 -->
+<!-- 사용자 CSS 추가 -->
 <th:block layout:fragment="css">
   <style>
     .fieldError {
@@ -14,18 +14,21 @@
 
 <!-- 사용자 스크립트 추가 -->
 <th:block layout:fragment="script">
+
   <script th:inline="javascript">
     $(document).ready(function(){
       var errorMessage = [[${errorMessage}]];
       if(errorMessage != null){
         alert(errorMessage);
       }
-    })
+    });
   </script>
+
 </th:block>
 
 <div layout:fragment="content">
-  <form action="/members/new" role="form" method="post" th:object="${memberFormDTO}">
+
+  <form action="/members/new" role="form" method="post"  th:object="${memberFormDTO}">
     <div class="form-group">
       <label th:for="name">이름</label>
       <input type="text" th:field="*{name}" class="form-control" placeholder="이름을 입력해주세요">
@@ -43,7 +46,7 @@
     </div>
     <div class="form-group">
       <label th:for="address">주소</label>
-      <input type="address" th:field="*{address}" class="form-control" placeholder="주소를 입력해주세요">
+      <input type="text" th:field="*{address}" class="form-control" placeholder="주소를 입력해주세요">
       <p th:if="${#fields.hasErrors('address')}" th:errors="*{address}" class="fieldError">Incorrect data</p>
     </div>
     <div style="text-align: center">
