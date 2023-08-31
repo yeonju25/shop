@@ -1,9 +1,15 @@
 package com.shop.controller;
 
 import com.shop.dto.ItemFormDTO;
+import com.shop.dto.ItemSearchDTO;
+import com.shop.dto.MainItemDTO;
+import com.shop.entity.Item;
 import com.shop.service.ItemService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -16,6 +22,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.persistence.EntityNotFoundException;
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 @RequiredArgsConstructor
@@ -90,4 +97,24 @@ public class ItemController {
         return "redirect:/";
     }
 
+    @GetMapping(value = {"/admin/items", "/admin/items/{page}"})
+    public String itemManage(ItemSearchDTO itemSearchDTO, @PathVariable("page")Optional<Integer> page, Model model){
+        Pageable pageable = PageRequest.of(page.isPresent() ? page.get() : 0, 3);
+
+        Page<Item> items = itemService.getAdminItemPage(itemSearchDTO, pageable);
+        model.addAttribute("items", items);
+        model.addAttribute("itemSearchDTO", itemSearchDTO);
+        model.addAttribute("maxPage", 5);
+        return "item/itemMng";
+    }
+
+    @GetMapping("/")
+    public String main(ItemSearchDTO itemSearchDTO, Optional<Integer> page, Model model){
+        Pageable pageable = PageRequest.of(page.isPresent() ? page.get() : 0, 6);
+        Page<MainItemDTO> items = itemService.getMainItemPage(itemSearchDTO, pageable);
+        model.addAttribute("items", items);
+        model.addAttribute("itemSearchDTO", itemSearchDTO);
+        model.addAttribute("maxPage", 5);
+        return "main";
+    }
 }
