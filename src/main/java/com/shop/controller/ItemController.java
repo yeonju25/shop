@@ -108,16 +108,6 @@ public class ItemController {
         return "item/itemMng";
     }
 
-    @GetMapping("/")
-    public String main(ItemSearchDTO itemSearchDTO, Optional<Integer> page, Model model){
-        Pageable pageable = PageRequest.of(page.isPresent() ? page.get() : 0, 6);
-        Page<MainItemDTO> items = itemService.getMainItemPage(itemSearchDTO, pageable);
-        model.addAttribute("items", items);
-        model.addAttribute("itemSearchDTO", itemSearchDTO);
-        model.addAttribute("maxPage", 5);
-        return "main";
-    }
-
     @GetMapping("/item/{itemId}")
     public String itemDtl(Model model, @PathVariable("itemId") Long itemId){
         ItemFormDTO itemFormDTO = itemService.getItemDtl(itemId);
