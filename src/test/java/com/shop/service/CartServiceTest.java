@@ -1,15 +1,20 @@
 package com.shop.service;
 
 import com.shop.constant.ItemSellStatus;
+import com.shop.dto.CartItemDTO;
+import com.shop.entity.CartItem;
 import com.shop.entity.Item;
 import com.shop.entity.Member;
 import com.shop.repository.CartItemRepository;
 import com.shop.repository.ItemRepository;
 import com.shop.repository.MemberRepository;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.transaction.annotation.Transactional;
+
+import javax.persistence.EntityNotFoundException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -46,4 +51,20 @@ class CartServiceTest {
         return memberRepository.save(member);
     }
 
+    @Test   // 장바구니 담기 테스트
+    public void addCart(){
+        Item item = saveItem();
+        Member member = saveMember();
+
+        CartItemDTO cartItemDTO = new CartItemDTO();
+        cartItemDTO.setCount(5);
+        cartItemDTO.setItemId(item.getId());
+
+        Long cartItemId = cartService.addCart(cartItemDTO, saveMember().getEmail());
+
+        CartItem cartItem = cartItemRepository.findById(cartItemId).orElseThrow(EntityNotFoundException::new);
+
+        assertEquals(item.getId(), cartItem.getItem().getId());
+        assertEquals(cartItemDTO.getCount(), cartItem.getCount());
+    }
 }
